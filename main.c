@@ -1,8 +1,9 @@
 // https://edu.anarcho-copy.org/Programming%20Languages/Go/writing%20an%20INTERPRETER%20in%20go.pdf
 #include <stdio.h>
 #include <stdlib.h>
-#include<string.h>
-enum TOKEN{
+#include <string.h>
+#include "hashmap.h"
+enum SINGLETOKEN{
 	EQUAL = '=',
 	PLUS = '+',
 	HYPHEN = '-',
@@ -24,52 +25,36 @@ enum TOKEN{
 	DQUOTE = '"',
 	QUESTION = '?',
 	COMMA = ',',
-	EXCLAMATION = '!'
+	EXCLAMATION = '!',
+	GTE = 71,
+	LTE = 76,
+	EQ = 69,
+	NOTEQ = 78
 };
-enum MTOKEN{
-	// DOUBLE CHARACTER TOKENS
-	GTE = 128,
-	LTE,
-	EQ,
-	NOTEQ,
-	// IDENTIFIERS
-	IDEN,
-	// KEYWORKDS
-	FUNCTION,
-	AUTO,
-	ELSE,
-	LONG,
-	SWITCH,
-	BREAK,
-	ENUM,
-	REGISTER,
-	TYPEDEF,
-	CASE,
-	EXTERN,
-	RETURN,
-	UNION,
-	CHAR,
-	FLOAT,
-	SHORT,
-	UNSIGNED,
-	CONST,
-	FOR,
-	SIGNED,
-	VOID,
-	CONTINUE,
-	GOTO,
-	SIZEOF,
-	VOLATILE,
-	DEFAULT,
-	IF,
-	STATIC,
-	WHILE,
-	DO,
-	INT,
-	STRUCT,
-	PACKED,
-	DOUBLE
-};
+/*
+
+TOKEN tokens[]; // symbols 
+' ' and '\n' are terminators
+RESERVED rTokens[];
+bool wordStarted;
+char tempWord[];
+
+while file is not end.
+case : if character is a symbol or terminator
+			if word is started
+				end word
+				if word is reserved
+					add word as token
+				else if word is not reserved
+					add word as identifier
+			else if word is not started
+				add symbol as token
+	   else if character is not a symbol or terminator
+			if word is started
+				append to word
+			if word is not started
+				start word and append
+ */
 int main(int argv, char* args[])
 {
 	if(argv <= 1)
@@ -327,14 +312,13 @@ int main(int argv, char* args[])
 											break;
 										}
 										else{
-											printf("%s\n",vk);
+											printf("Non reserved key word : %s \n",vk);
 										}
 									}else{
 										vk[vkindex++] = c;
 									}
 							}
 						}
-					
 				}
 			}
 			fclose(file);
@@ -342,7 +326,7 @@ int main(int argv, char* args[])
 			printf("file not found.");
 		}
 		for(int i = 0; i < index; i++){
-			printf("%i\n",tokens[i]);
+			printf("Token : %i\n",tokens[i]);
 		}
 	}
 }
