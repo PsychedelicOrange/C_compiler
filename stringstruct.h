@@ -1,0 +1,19 @@
+#ifndef STRING_STRUCT_H
+#define STRING_STRUCT_H
+#include<stdio.h>
+#include<stdlib.h>
+struct string{
+	char* array;
+	size_t size;
+};
+// create a new string obj and malloc size to it
+struct string string_malloc(size_t size) ;
+// free memory taken by string
+void string_free(struct string str);
+// print non-null terminated string
+void string_print(struct string str);
+// make and return a deep copy of the string
+struct string string_copy(struct string src);
+// make and return a deep copy of the string
+struct string string_copy_c_style(char* src,size_t size);
+#endif
