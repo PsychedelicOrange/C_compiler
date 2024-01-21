@@ -48,12 +48,13 @@ int hash_contains(struct Hashmap* hashmap,char* word, size_t size){
 	int sum = 0;
 	for(size_t i =0;i < size; i++)
 	{
+		printf("%c",word[i]);
 		sum += word[i];
 	}
 	int hashindex = sum%hashmap->size;
 	while(hashindex < hashmap->size)
 	{
-		if(size == hashmap->hash[hashindex].str.size && !strcmp(hashmap->hash[hashindex].str.array, word)){
+		if(size == hashmap->hash[hashindex].str.size && !strncmp(hashmap->hash[hashindex].str.array, word, size)){
 			return 1;
 		}else if(hashmap->hash[hashindex].token == NULL_DEBUG){
 			return 0;
@@ -75,15 +76,17 @@ struct string hash_getString(struct Hashmap hashmap,enum MULTITOKEN mtoken){
 
 }
 int hash_getToken(struct Hashmap* hashmap,char* word, size_t size){
+	//string_print(string_copy_c_style(word,size));
 	int sum = 0;
 	for(size_t i =0;i < size; i++)
 	{
 		sum += word[i];
 	}
 	int hashindex = sum%hashmap->size;
+	//printf(";	hash_index:%i",hashindex);
 	while(hashindex < hashmap->size)
 	{
-		if(size == hashmap->hash[hashindex].str.size && !strcmp(hashmap->hash[hashindex].str.array, word)){
+		if(size == hashmap->hash[hashindex].str.size && !strncmp(hashmap->hash[hashindex].str.array, word, size)){
 			return hashmap->hash[hashindex].token;
 		}else if(hashmap->hash[hashindex].token == NULL_DEBUG){
 			return hashmap->hash[hashindex].token;

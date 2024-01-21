@@ -1,9 +1,10 @@
 // https://edu.anarcho-copy.org/Programming%20Languages/Go/writing%20an%20INTERPRETER%20in%20go.pdf
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "stringstruct.h"
 #include "hashmap.h"
+
 enum SINGLETOKEN{
 	EQUAL = '=',
 	PLUS = '+',
@@ -47,15 +48,18 @@ struct TOKEN{
 	union UTOKEN utoken;
 	enum TOKEN_TYPE tokentype;
 };
+
 struct TOKENS{
 	struct TOKEN* array;
 	size_t size;
 };
+
 void tokens_init(struct TOKENS* tokens, size_t size)
 {
 	tokens->size = size;
 	tokens->array =  malloc(size* sizeof(struct TOKEN));
 }
+
 void tokens_add_singletoken(struct TOKENS* tokens,size_t* token_index,enum SINGLETOKEN singletoken)
 {
 	printf("\nadd single token called ");
@@ -65,9 +69,10 @@ void tokens_add_singletoken(struct TOKENS* tokens,size_t* token_index,enum SINGL
 	tokens->array[(*token_index)++] = token;
 	printf("\ntoken_index after : %i ",(int)*token_index);
 }
+
 /*
-   TOKEN tokens[]; // symbols 
-   ' ' and '\n' are terminators
+TOKEN tokens[]; // symbols 
+' ' and '\n' are terminators
 RESERVED rTokens[];
 bool wordStarted;
 char tempWord[];
@@ -87,12 +92,17 @@ case : if character is a symbol or terminator
 				append to word
 			if word is not started
 				start word and append
+
  */
 void checkWordAndAddToken(struct Hashmap hashmap, struct TOKENS* tokens,size_t* index,char* tempword, size_t temp_index){
 	enum MULTITOKEN mtoken = hash_getToken(&hashmap,tempword,temp_index);
+	printf("checking word:");
+	string_print(string_copy_c_style(tempword,temp_index));
+	printf("\t size : %i",(int) temp_index);
 	if(mtoken == NULL_DEBUG)
 	{
 		// add identifier
+		printf("\n above token not found in reserved hash");
 		struct TOKEN token;
 		token.utoken.identifier = string_copy_c_style(tempword, temp_index);	
 		token.tokentype = INDENTIFIER;
@@ -119,7 +129,6 @@ int main(int argv, char* args[])
 	struct TOKENS tokens;
 	tokens_init(&tokens,10000);	
 	{
-
 		struct Hashmap hashmap;
 		hash_init(&hashmap,10000);
 		hash_insert_all_tokens(&hashmap);
@@ -358,6 +367,13 @@ int main(int argv, char* args[])
 							word_started = 0;
 						}
 						break;
+					case '\t':
+						if(word_started){
+							//ungetc(c, file);
+							checkWordAndAddToken(hashmap,&tokens,&token_index,temp,temp_index);
+							word_started = 0;
+						}
+						break;
 					default:
 						if(!word_started)
 						{
@@ -378,12 +394,16 @@ int main(int argv, char* args[])
 		for(int i = 0; i < token_index; i++){
 			if(tokens.array[i].tokentype == SINGLETOKEN)
 			{
-				printf("%c",tokens.array[i].utoken.single_token);
+				printf("single token: %c \n",tokens.array[i].utoken.single_token);
 			}
 			else if(tokens.array[i].tokentype == MULTITOKEN){
+				printf("multitoken: ");
 				string_print(hash_getString(hashmap,tokens.array[i].utoken.multi_token));
+				printf("\n");
 			}else{
+				printf("identifier: ");
 				string_print(tokens.array[i].utoken.identifier);
+				printf("\n");
 			}
 		}
 	}
